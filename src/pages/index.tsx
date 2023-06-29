@@ -1,13 +1,8 @@
-import { CompositeDecorator, ContentState, Editor, EditorState } from 'draft-js';
+import { CompositeDecorator, DefaultDraftBlockRenderMap, Editor, EditorState } from 'draft-js';
 import 'draft-js/dist/Draft.css';
 import { useEffect, useState } from 'react';
 
-
-const timeout = 60000
-
-const initialContent = ContentState.createFromText("Just like your thoughts, your notes here don't stick around forever...");
-
-function FadingSpan(props: any) {
+const FadingBlock = (props) => {
   const [visible, setVisible] = useState(true);
 
   useEffect(() => {
@@ -19,28 +14,102 @@ function FadingSpan(props: any) {
   }, []);
 
   const style = {
-    animation: visible ? `fadeOut ${timeout / 1000}s forwards` : '',
-    display: visible ? 'inline' : 'none'
+    transition: visible ? '' : `opacity ${timeout / 1000}s forwards, height ${timeout / 1000}s forwards`,
+    opacity: visible ? 1 : 0,
+    height: visible ? 'auto' : '0',
+    overflow: 'hidden'
   };
+
+  return <div style={style}>{props.children}</div>;
+};
+
+const blockRenderMap = DefaultDraftBlockRenderMap.merge({
+  'unstyled': {
+    element: 'div',
+    wrapper: <FadingBlock />,
+  },
+});
+
+
+const timeout = 5000
+
+function FadingSpan(props: any) {
+  const [style, setStyle] = useState<any>({
+    display: 'inline-block',
+    transition: `opacity ${timeout / 1000}s, textSize ${timeout / 1000}s`,
+    textSize: 'auto',  // Start at normal height
+  });
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      // Start shrinking and fading after timeout
+      setStyle({
+        ...style,
+        opacity: 0,
+        textSize: 0,
+      });
+    }, timeout);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   return <span style={style}>{props.children}</span>;
 }
+
+// function FadingSpan(props: DraftDecoratorComponentProps) {
+//   const [visible, setVisible] = useState(true);
+
+//   useEffect(() => {
+//     const timer = setTimeout(() => {
+//       setVisible(false);
+//     }, timeout);
+
+//     return () => clearTimeout(timer);
+//   }, []);
+
+//   const style = {
+//     animation: visible ? `fadeOut ${timeout / 1000}s forwards` : '',
+//     // opacity: visible ? 1 : 0,
+//     display: 'inline-block',
+//     overflow: 'hidden',
+//     marginTop: '-100px',
+//     height: '5px',
+//     fontSize: '9px',
+//     // position: 'absolute',
+//     // display: visible ? 'inline' : 'none'
+//     // fontSize: '9px',
+//     // lineHeight: '10px',
+//   };
+
+//   return <span className='text-small' style={style}>{props.children}</span>;
+// }
+
+const HandleSpan = props => {
+  return (
+    <span {...props}>
+      {props.children}
+    </span>
+  );
+};
 
 const decorator = new CompositeDecorator([
   {
     strategy: (contentBlock, callback, contentState) => {
       const text = contentBlock.getText();
-      for (let i = 0; i < text.length; i++) {
-        callback(i, i + 1);
-      }
+      // for (let i = 0; i < text.length; i++) {
+      //   callback(i, i + 1);
+      // }
+      callback(0, text.length);
     },
     component: FadingSpan,
   },
 ]);
 
 
+
+
 export default function Home() {
-  const [editorState, setEditorState] = useState(() => EditorState.createWithContent(initialContent, decorator));
+  const [editorState, setEditorState] = useState(() => EditorState.createEmpty(decorator));
 
   const handleEditorChange = (newEditorState: any) => {
     setEditorState(EditorState.set(newEditorState, { decorator }));
@@ -50,7 +119,7 @@ export default function Home() {
     <div className="flex flex-col items-center justify-between p-24 h-screen">
       <div className="flex flex-col mt-2 pt-2 w-[600px] h-full items-start">
         <p className='text-black opacity-60 mb-2.5 font-semibold'>Ephemeral Notes</p>
-        <Editor editorState={editorState} onChange={handleEditorChange} />
+        <Editor editorState={editorState} onChange={handleEditorChange} placeholder="Just like your thoughts, your notes here don't stick around forever..." blockRenderMap={blockRenderMap} />
       </div>
     </div>
   );

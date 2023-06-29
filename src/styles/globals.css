@@ -33,8 +33,20 @@ div.DraftEditor-root {
   }
   border-top: #C9C9C9 2px solid;
   padding-top: 10px;
+  transition: height 1s ease-in-out;  /* Adjust duration and easing as needed */
 }
 div.DraftEditor-editorContainer,
 div.public-DraftEditor-content {
   height: 100%;
+}
+
+.faded {
+  height: 20px;  /* Or whatever the height of your blocks are */
+  overflow: hidden;
+  width: 0;
+}
+
+.DraftEditor-root {
+  /* Other styles... */
+  transition: height 1s ease-in-out;  /* Adjust duration and easing as needed */
 }
