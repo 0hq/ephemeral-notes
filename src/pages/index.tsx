@@ -1,8 +1,11 @@
 import { CompositeDecorator, DefaultDraftBlockRenderMap, Editor, EditorState } from 'draft-js';
 import 'draft-js/dist/Draft.css';
+import { Map as ImmutableMap } from 'immutable';
 import { useEffect, useState } from 'react';
 
-const FadingBlock = (props) => {
+const timeout = 5000
+
+const FadingBlock = (props: any) => {
   const [visible, setVisible] = useState(true);
 
   useEffect(() => {
@@ -15,23 +18,23 @@ const FadingBlock = (props) => {
 
   const style = {
     transition: visible ? '' : `opacity ${timeout / 1000}s forwards, height ${timeout / 1000}s forwards`,
-    opacity: visible ? 1 : 0,
-    height: visible ? 'auto' : '0',
+    // opacity: visible ? 1 : 0,
+    // height: visible ? 'auto' : '0',
     overflow: 'hidden'
   };
 
   return <div style={style}>{props.children}</div>;
 };
 
-const blockRenderMap = DefaultDraftBlockRenderMap.merge({
+const blockRenderMap = ImmutableMap({
   'unstyled': {
     element: 'div',
     wrapper: <FadingBlock />,
   },
 });
 
+const extendedBlockRenderMap = DefaultDraftBlockRenderMap.merge(blockRenderMap);
 
-const timeout = 5000
 
 function FadingSpan(props: any) {
   const [style, setStyle] = useState<any>({
@@ -56,41 +59,6 @@ function FadingSpan(props: any) {
   return <span style={style}>{props.children}</span>;
 }
 
-// function FadingSpan(props: DraftDecoratorComponentProps) {
-//   const [visible, setVisible] = useState(true);
-
-//   useEffect(() => {
-//     const timer = setTimeout(() => {
-//       setVisible(false);
-//     }, timeout);
-
-//     return () => clearTimeout(timer);
-//   }, []);
-
-//   const style = {
-//     animation: visible ? `fadeOut ${timeout / 1000}s forwards` : '',
-//     // opacity: visible ? 1 : 0,
-//     display: 'inline-block',
-//     overflow: 'hidden',
-//     marginTop: '-100px',
-//     height: '5px',
-//     fontSize: '9px',
-//     // position: 'absolute',
-//     // display: visible ? 'inline' : 'none'
-//     // fontSize: '9px',
-//     // lineHeight: '10px',
-//   };
-
-//   return <span className='text-small' style={style}>{props.children}</span>;
-// }
-
-const HandleSpan = props => {
-  return (
-    <span {...props}>
-      {props.children}
-    </span>
-  );
-};
 
 const decorator = new CompositeDecorator([
   {
@@ -105,9 +73,6 @@ const decorator = new CompositeDecorator([
   },
 ]);
 
-
-
-
 export default function Home() {
   const [editorState, setEditorState] = useState(() => EditorState.createEmpty(decorator));
 
@@ -119,7 +84,7 @@ export default function Home() {
     <div className="flex flex-col items-center justify-between p-24 h-screen">
       <div className="flex flex-col mt-2 pt-2 w-[600px] h-full items-start">
         <p className='text-black opacity-60 mb-2.5 font-semibold'>Ephemeral Notes</p>
-        <Editor editorState={editorState} onChange={handleEditorChange} placeholder="Just like your thoughts, your notes here don't stick around forever..." blockRenderMap={blockRenderMap} />
+        <Editor editorState={editorState} onChange={handleEditorChange} placeholder="Just like your thoughts, your notes here don't stick around forever..." blockRenderMap={extendedBlockRenderMap} />
       </div>
     </div>
   );
