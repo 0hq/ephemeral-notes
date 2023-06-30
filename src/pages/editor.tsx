@@ -28,8 +28,12 @@ const decorator = new CompositeDecorator([
   {
     strategy: (contentBlock, callback, contentState) => {
       const text = contentBlock.getText();
-      for (let i = 0; i < text.length; i++) {
-        callback(i, i + 1);
+      // split the text on spaces to find words
+      const words = text.split(' ');
+      let length = 0
+      for (let i = 0; i < words.length; i++) {
+        callback(length, length + words[i].length);
+        length += words[i].length + 1
       }
     },
     component: FadingSpan,
