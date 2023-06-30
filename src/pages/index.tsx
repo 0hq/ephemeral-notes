@@ -6,7 +6,7 @@ export default function Home() {
   const router = useRouter()
 
   const [text, setText] = useState(
-    `This project came from a conversation I had with a friend about how to properly use written notes and Google Docs to amplify the thought process and the ways in which the appearance of organization, clarity, and infinite space can deceive and hurt us.
+    `This project came from a conversation I had with a friend about how to properly use written notes and Google Docs to amplify the thought process, and the ways in which the appearance of organization, clarity, and infinite space can deceive and hurt us.
 
     I’ve recently found myself benefitting dramatically by writing very large documents that expand through all possible thought for a given idea or large decision, yet still, somewhat scared of it. The degree to which writing things in a document in a ‘clean way’ seems to calm my feeling of confusion, ambiguity, or doubt is frightening: is this clarity or only the feeling of it?
     
@@ -29,7 +29,7 @@ export default function Home() {
           
           Ephemeral is a disappearing notepad: where all of your notes slowly fade over time. 
           
-          All words take 30 seconds to fully disappear. If you want to keep something, feel free to write it again - the same way you would call a thought back from memory.
+          All words take 60 seconds to fully disappear. If you want to keep something, feel free to write it again - the same way you would call a thought back from memory.
           
           There’s no formatting tools, no bold, no italics, nothing. How much time do we spending obsessing over the way things look, rather than the thinking itself? 
           

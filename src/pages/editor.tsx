@@ -3,7 +3,7 @@ import 'draft-js/dist/Draft.css';
 import Immutable from 'immutable';
 import { useEffect, useState } from 'react';
 
-const timeout = 30000
+const timeout = 60000
 
 function FadingSpan(props: any) {
   const [style, setStyle] = useState<any>({
@@ -109,7 +109,7 @@ export default function Home() {
       <div className="flex flex-col mt-2 pt-2 max-w-[600px] flex-shrink h-full items-start mx-auto">
         <div className="flex flex-row items-center justify-between w-full">
           <p className='text-black opacity-60 mb-2.5 font-semibold'>Ephemeral Notes</p>
-          <p className='text-black opacity-60 mb-2.5 font-light text-sm'>30s</p>
+          <p className='text-black opacity-60 mb-2.5 font-light text-sm'>60s</p>
         </div>
         <Editor editorState={editorState} onChange={handleEditorChange} placeholder="Just like your thoughts, your notes don't stick around forever..."
         // blockRenderMap={extendedBlockRenderMap}
