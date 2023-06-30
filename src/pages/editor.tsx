@@ -3,7 +3,7 @@ import 'draft-js/dist/Draft.css';
 import Immutable from 'immutable';
 import { useEffect, useState } from 'react';
 
-const timeout = 15000
+const timeout = 30000
 
 function FadingSpan(props: any) {
   const [style, setStyle] = useState<any>({
@@ -13,16 +13,11 @@ function FadingSpan(props: any) {
   });
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      // Start shrinking and fading after timeout
-      setStyle({
-        ...style,
-        opacity: 0,
-        textSize: 0,
-      });
-    }, timeout);
-
-    return () => clearTimeout(timer);
+    setStyle({
+      ...style,
+      opacity: 0,
+      textSize: 0,
+    });
   }, []);
 
   return <span style={style}>{props.children}</span>;
@@ -55,7 +50,7 @@ export default function Home() {
       newBlocks.forEach((value, key) => {
         const [text, timestamp] = value;
 
-        if (currentTime - timestamp >= timeout * 2) {
+        if (currentTime - timestamp >= timeout) {
           newBlocks.set(key, ['', timestamp]);
           shouldUpdate = true;
         }
@@ -110,8 +105,8 @@ export default function Home() {
 
 
   return (
-    <div className="flex flex-col items-center justify-between p-24 h-screen">
-      <div className="flex flex-col mt-2 pt-2 w-[600px] h-full items-start">
+    <div className="w-full items-center justify-between p-12 h-screen">
+      <div className="flex flex-col mt-2 pt-2 max-w-[600px] flex-shrink h-full items-start mx-auto">
         <div className="flex flex-row items-center justify-between w-full">
           <p className='text-black opacity-60 mb-2.5 font-semibold'>Ephemeral Notes</p>
           <p className='text-black opacity-60 mb-2.5 font-light text-sm'>30s</p>
@@ -121,5 +116,7 @@ export default function Home() {
         />
       </div>
     </div>
+
   );
 }
+
