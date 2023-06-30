@@ -51,7 +51,7 @@ export default function Home() {
         <div className={`${pageState % 2 == 0 ? "fade-in" : "fade-out"}`}>
           {text.split("\n").map((line, i) => <p className="mb-8" key={i}>{line}</p>)}
           <button onClick={updateState} className={"underline mt-1 text-medium"}>
-            {pageState > 1 ? 'Start' : 'Next'} ->
+            {pageState > 1 ? 'Start' : 'Next'} -&gt;
           </button>
         </div>
       </div>
