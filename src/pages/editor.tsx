@@ -3,7 +3,7 @@ import 'draft-js/dist/Draft.css';
 import Immutable from 'immutable';
 import { useEffect, useState } from 'react';
 
-const timeout = 10000
+const timeout = 120000
 
 function FadingSpan(props: any) {
   const [style, setStyle] = useState<any>({
