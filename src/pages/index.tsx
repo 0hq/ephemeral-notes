@@ -38,7 +38,7 @@ export default function Home() {
         setPageState(2);
       }, 1500); // Adjust timing to match CSS transition
     } else {
-      setPageState(1);
+      setPageState(3);
       setTimeout(() => {
         router.push("/editor");
       }, 1500); // Adjust timing to match CSS transition
