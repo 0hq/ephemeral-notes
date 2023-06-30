@@ -1,8 +1,9 @@
-import '@/styles/globals.css'
-import type { AppProps } from 'next/app'
-import Head from 'next/head'
+import '@/styles/globals.css';
+import { Analytics } from '@vercel/analytics/react';
+import type { AppProps } from 'next/app';
+import Head from 'next/head';
 
-import { JetBrains_Mono } from 'next/font/google'
+import { JetBrains_Mono } from 'next/font/google';
 
 const jetbrains = JetBrains_Mono({ subsets: ['latin'] })
 
@@ -31,6 +32,7 @@ export default function App({ Component, pageProps }: AppProps) {
       <main className={jetbrains.className}>
         <Component {...pageProps} />
       </main>
+      <Analytics />
     </>)
 
 }
