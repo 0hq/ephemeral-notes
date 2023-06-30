@@ -4,6 +4,7 @@
 
 body {
   color: #fff;
+  font-size: 14px;
 }
 
 @keyframes fadeOut {
@@ -49,4 +50,14 @@ div.public-DraftEditor-content {
 .DraftEditor-root {
   /* Other styles... */
   transition: height 1s ease-in-out;  /* Adjust duration and easing as needed */
+}
+
+.fade-in {
+  transition: opacity 1.5s ease-in-out;
+  opacity: 1;
+}
+
+.fade-out {
+  transition: opacity 1.5s ease-in-out;
+  opacity: 0;
 }

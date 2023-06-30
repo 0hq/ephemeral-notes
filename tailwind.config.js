@@ -7,8 +7,12 @@ module.exports = {
   ],
   theme: {
     extend: {
+      duration: {
+        '500': '500ms',
+      },
       transitionProperty: {
-        'height': 'height'
+        'height': 'height',
+        'opacity': 'opacity',
       }
     }
   },

@@ -1,122 +1,63 @@
-import { CharacterMetadata, CompositeDecorator, ContentBlock, ContentState, Editor, EditorState } from 'draft-js';
-import 'draft-js/dist/Draft.css';
-import Immutable from 'immutable';
-import { useEffect, useState } from 'react';
 
-const timeout = 5000
-
-function FadingSpan(props: any) {
-  const [style, setStyle] = useState<any>({
-    display: 'inline-block',
-    transition: `opacity ${timeout / 1000}s, textSize ${timeout / 1000}s`,
-    textSize: 'auto',  // Start at normal height
-  });
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      // Start shrinking and fading after timeout
-      setStyle({
-        ...style,
-        opacity: 0,
-        textSize: 0,
-      });
-    }, timeout);
-
-    return () => clearTimeout(timer);
-  }, []);
-
-  return <span style={style}>{props.children}</span>;
-}
-
-
-const decorator = new CompositeDecorator([
-  {
-    strategy: (contentBlock, callback, contentState) => {
-      const text = contentBlock.getText();
-      for (let i = 0; i < text.length; i++) {
-        callback(i, i + 1);
-      }
-    },
-    component: FadingSpan,
-  },
-]);
-
+import { useRouter } from "next/router";
+import { useState } from "react";
 
 export default function Home() {
-  const [blocks, setBlocks] = useState(new Map());
-  const [editorState, setEditorState] = useState(() => EditorState.createEmpty(decorator));
+  const router = useRouter()
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      const currentTime = new Date().getTime();
-      const newBlocks = new Map(blocks);
-      let shouldUpdate = false;
+  const [text, setText] = useState(
+    `This project came from a conversation I had with a friend about how to properly use written notes and Google Docs to amplify the thought process and the ways in which the appearance of organization, clarity, and infinite space can deceive and hurt us.
 
-      newBlocks.forEach((value, key) => {
-        const [text, timestamp] = value;
+    I’ve recently found myself benefitting dramatically by writing very large documents that expand through all possible thought for a given idea or large decision, yet still, somewhat scared of it. The degree to which writing things in a document in a ‘clean way’ seems to calm my feeling of confusion, ambiguity, or doubt is frightening: is this clarity or only the feeling of it?
+    
+    There are many times in which sitting down, closing your eyes, and thinking about the problem in your own mind is extremely important. I’ve found myself occasionally going to the Archimedes Banya (of which I would strongly recommend) and sitting for hours in the various steam rooms and pools thinking about important questions. 
+    
+    While indubitably productive, I found myself frustrated with the amount of “RAM” I had in my head, feeling like I couldn’t process the thoughts that weren’t purely subconscious, finding myself repeating things in my head and attempting to almost auto-regressively process them (and feeling like I was just a big organic language model).
+    
+    This is an experiment in trying to provide the great benefit of  mental tools like typing out thoughts or sketching on a whiteboard, without offering the often misleading nature of such, whether infinitely branching different ideas without penalty, leaning on visual structure and organization as a substitute for true clarity, or the danger of accidentally only copying down instead of thinking.`
+  );
+  const [pageState, setPageState] = useState(0);
 
-        if (currentTime - timestamp >= timeout * 2) {
-          newBlocks.set(key, ['', timestamp]);
-          shouldUpdate = true;
-        }
-      });
+  const updateState = () => {
+    if (pageState == 0) {
+      setPageState(1);
+      setTimeout(() => {
+        setText(
+          `To write is to think. It’s the greatest tool we have.
 
-      if (shouldUpdate) {
-        const newContentState = ContentState.createFromBlockArray(
-          Array.from(newBlocks, ([key, [text]]) => new ContentBlock({
-            key: key,
-            type: 'unstyled',
-            text: text,
-            characterList: Immutable.List(
-              Array(text.length).fill(
-                CharacterMetadata.create(),
-              ),
-            ),
-          })),
+          But it’s easy to slip out of writing to think into thinking to write. This is a writing tool that forces you to think.
+          
+          Ephemeral is a disappearing notepad: where all of your notes slowly fade over time. 
+          
+          All words take 30 seconds to fully disappear. If you want to keep something, feel free to write it again - the same way you would call a thought back from memory.
+          
+          There’s no formatting tools, no bold, no italics, nothing. How much time do we spending obsessing over the way things look, rather than the thinking itself? 
+          
+          This tool is intended to be used as you are deep in thought and want to boost your working memory, need to sketch something out when you can’t picture it in your head, or need to channel your stream of consciousness.`
         );
-        const newEditorState = EditorState.push(editorState, newContentState, 'change-block-data');
-        setEditorState(newEditorState);
-        setBlocks(newBlocks);
-      }
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, [blocks, editorState]);
-
-  const handleEditorChange = (newEditorState: EditorState) => {
-    const newBlocks = new Map();
-    const currentTime = new Date().getTime();
-
-    newEditorState.getCurrentContent().getBlocksAsArray().forEach(block => {
-      const oldBlockValue = blocks.get(block.getKey());
-      const newText = block.getText();
-
-      if (oldBlockValue) {
-        const [oldText] = oldBlockValue;
-
-        if (oldText === newText) {
-          newBlocks.set(block.getKey(), oldBlockValue);
-        } else {
-          newBlocks.set(block.getKey(), [newText, currentTime]);
-        }
-      } else {
-        newBlocks.set(block.getKey(), [newText, currentTime]);
-      }
-    });
-
-    setBlocks(newBlocks);
-    setEditorState(newEditorState);
+        setPageState(2);
+      }, 1500); // Adjust timing to match CSS transition
+    } else {
+      setPageState(1);
+      setTimeout(() => {
+        router.push("/editor");
+      }, 1500); // Adjust timing to match CSS transition
+    }
   };
 
-
   return (
-    <div className="flex flex-col items-center justify-between p-24 h-screen">
-      <div className="flex flex-col mt-2 pt-2 w-[600px] h-full items-start">
-        <p className='text-black opacity-60 mb-2.5 font-semibold'>Ephemeral Notes</p>
-        <Editor editorState={editorState} onChange={handleEditorChange} placeholder="Just like your thoughts, your notes here don't stick around forever..."
-        // blockRenderMap={extendedBlockRenderMap}
-        />
+    <div className="flex flex-col items-center justify-between p-12 text-[#6a6a6a]">
+      <div className="flex flex-col mt-2 pt-2 max-w-[600px] flex-shrink items-start">
+        <div className={`${pageState % 2 == 0 ? "fade-in" : "fade-out"}`}>
+          {text.split("\n").map((line, i) => <p className="mb-8" key={i}>{line}</p>)}
+          <button onClick={updateState} className={"underline mt-1 text-medium"}>
+            {pageState > 1 ? 'Start' : 'Next'} ->
+          </button>
+        </div>
       </div>
     </div>
   );
-}
+};
+
+
+
